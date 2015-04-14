@@ -29,8 +29,6 @@ foreach($chars as $char){
     }
 }
 
-// supprime le premier espace de la chaine
-$result = substr($result, 1);
-echo($result."\n");
+echo(trim($result)."\n");
 
 ?>
