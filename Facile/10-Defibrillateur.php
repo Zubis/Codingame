@@ -13,31 +13,27 @@ fscanf(STDIN, "%d",
     $N
 );
 
-$minDep   = null;
+$minDist  = null;
 $curDefib = null;
 $rep      = false;
 
-$user = new User($LON, $LAT);
+$user = new User($LAT, $LON);
 
 for ($i = 0; $i < $N; $i++) {
 
-  $defib = new Defib(
-      stream_get_line(STDIN, 256, "\n")
-  );
+  $defib_String = stream_get_line(STDIN, 256, "\n");
+  $defib        = new Defib($defib_String);
 
-  $x = ($user->getLon() - $defib->getLon()) * (cos(($defib->getLat() + $user->getLat()) / 2));
-  $y = ($user->getLat() - $defib->getLat());
-  $d = sqrt(pow($x, 2) + pow($y, 2)) * 6371;
+  $d = $defib->getRange($user);
 
-  if ($d < $minDep || $minDep === null) {
-    $minDep   = $d;
+  if ($d < $minDist || $minDist === null) {
+
+    $minDist  = $d;
     $curDefib = $defib;
   }
 }
 
 echo($curDefib);
-
-// L'utilisation de class est un peu useless mais je trouve ça plus propre et donc plus facile à lire que des array.
 
 class User
 {
@@ -53,12 +49,12 @@ class User
 
   public function getLat ()
   {
-    return str_replace(',', '.', $this->lat);
+    return num($this->lat);
   }
 
   public function getLon ()
   {
-    return str_replace(',', '.', $this->lon);
+    return num($this->lon);
   }
 }
 
@@ -79,7 +75,7 @@ class Defib
 
   public function __construct ($string)
   {
-    list($this->id, $this->name, $this->address, $this->phone, $this->lat, $this->lon) = explode(';', $string);
+    list($this->id, $this->name, $this->address, $this->phone, $this->lon, $this->lat) = explode(';', $string);
   }
 
   public function __toString ()
@@ -109,14 +105,30 @@ class Defib
 
   public function getLat ()
   {
-    return str_replace(',', '.', $this->lat);
+    return num($this->lat);
   }
 
   public function getLon ()
   {
-    return str_replace(',', '.', $this->lon);
+    return num($this->lon);
+
   }
 
+  public function getRange (User $user)
+  {
+
+    $x = ($this->getLon() - $user->getLon()) * cos(($user->getLat() + $this->getLat()) / 2);
+    $y = ($this->getLat() - $user->getLat());
+    $d = (sqrt(pow($x, 2) + pow($y, 2))) * 6371;
+
+    return $d;
+  }
+
+}
+
+function num ($num)
+{
+  return str_replace(',', '.', $num);
 }
 
 ?>
