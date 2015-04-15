@@ -1,8 +1,5 @@
 <?php
 
-// etonnament le 3eme test échoue, mais lorsque l'on valide ils réussissent ...
-
-
 fscanf(STDIN, "%s",
     $LON
 );
