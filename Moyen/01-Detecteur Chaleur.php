@@ -12,12 +12,9 @@ fscanf(STDIN, "%d",
     $N // maximum number of turns before game over.
 );
 fscanf(STDIN, "%d %d",
-    $X0,
-    $Y0
+    $x,
+    $y
 );
-
-$x = $X0;
-$y = $Y0;
 
 $maxX = $W;
 $maxY = $H;
