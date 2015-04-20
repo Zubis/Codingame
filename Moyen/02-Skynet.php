@@ -10,22 +10,23 @@ fscanf(STDIN, "%d %d %d",
     $E // the number of exit gateways
 );
 
-$links = array();
+$nodes = array();
+$gates = array();
+
 for ($i = 0; $i < $L; $i++) {
   fscanf(STDIN, "%d %d",
       $N1, // N1 and N2 defines a link between these nodes
       $N2
   );
 
-  $links[] = array($N1 => $N2, $N2 => $N1);
+  $nodes[] = array($N2 => $N1, $N1 => $N2);
 }
 
-$gateways = array();
 for ($i = 0; $i < $E; $i++) {
   fscanf(STDIN, "%d",
       $EI // the index of a gateway node
   );
-  $gateways[] = $EI;
+  $gates[] = $EI;
 }
 
 // game loop
@@ -36,15 +37,20 @@ while (true) {
 
   $return = null;
 
-  foreach ($gateways as $gateway) {
-    foreach ($links as $key => $link) {
-      // Si Agent devant une gateway, on supprime cette gateway
-      // sinon on en supprime une au pif
-      if (array_key_exists($gateway, $link) && $link[$gateway] === $SI) {
-        $return = $gateway . ' ' . $link[$gateway];
-      } elseif (array_key_exists($gateway, $link) && is_null($return)) {
-        $return = $gateway . ' ' . $link[$gateway];
+  foreach ($nodes as $key => $link) {
+
+    foreach ($gates as $gate) {
+      if (array_key_exists($gate, $link) && $link[$gate] === $SI) {
+        $return = $SI . ' ' . $link[$SI];
+        unset($nodes[$key]);
+        break 3;
       }
+    }
+
+    if (array_key_exists($SI, $link) && is_null($return)) {
+      $return = $SI . ' ' . $link[$SI];
+      unset($nodes[$key]);
+      break 2;
     }
   }
 
